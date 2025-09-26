@@ -31,17 +31,13 @@ const createUserApiClient = () => {
     async (error) => {
       const originalRequest = error.config;
 
-      if (error.response?.status === 401) {
-        store.dispatch(userLogout({ isLoggedIn: false }));
-        localStorage.removeItem(USER_ACCESS_TOKEN_KEY);
-        localStorage.removeItem(USER_REFRESH_TOKEN_KEY);
-        // window.location.href = USER_LOGIN_REDIRECT;
-      }
+      
 
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
           const refreshToken = localStorage.getItem(USER_REFRESH_TOKEN_KEY);
+          console.log(refreshToken,"Refreshhhhh")
           if (!refreshToken) throw new Error('Refresh token missing');
           
           const { data } = await axios.post(`${apiUrl}${USER_REFRESH_ENDPOINT}`, {
@@ -63,8 +59,14 @@ const createUserApiClient = () => {
           store.dispatch(userLogout({ isLoggedIn: false }));
           localStorage.removeItem(USER_ACCESS_TOKEN_KEY);
           localStorage.removeItem(USER_REFRESH_TOKEN_KEY);
-          // window.location.href = USER_LOGIN_REDIRECT;
+          window.location.href = USER_LOGIN_REDIRECT;
         }
+      }
+      if (error.response?.status === 401) {
+        store.dispatch(userLogout({ isLoggedIn: false }));
+        localStorage.removeItem(USER_ACCESS_TOKEN_KEY);
+        localStorage.removeItem(USER_REFRESH_TOKEN_KEY);
+        window.location.href = USER_LOGIN_REDIRECT;
       }
 
       if (error.response?.status === 403) {
@@ -72,7 +74,7 @@ const createUserApiClient = () => {
         store.dispatch(userLogout({ isLoggedIn: false }));
         localStorage.removeItem(USER_ACCESS_TOKEN_KEY);
         localStorage.removeItem(USER_REFRESH_TOKEN_KEY);
-        // window.location.href = USER_LOGIN_REDIRECT;
+        window.location.href = USER_LOGIN_REDIRECT;
       }
 
       return Promise.reject(error);

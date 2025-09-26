@@ -26,16 +26,7 @@ user_route.post('/auth/resend-otp',userController.resendOtp.bind(userController)
 
 user_route.post('/auth/verify-login',validate(signInValidation),userController.verifyLogin.bind(userController));
 
-user_route.post('/addrestaurant',upload.single('photos'),authMiddleware,userController.addRestuarant.bind(userController));
-
-
-user_route.get('/restaurant/:id',userController.getRestaurantById.bind(userController));
-
-user_route.put('/restaurant/:id',userController.updateRestaurant.bind(userController));
-
-user_route.delete('/restaurant/:id',userController.deleteRestaurant.bind(userController));
-
-user_route.get('/restaurant',userController.getRestaurant.bind(userController));
+user_route.post('/token/refresh',userController.validaterefreshToken.bind(userController));
 
 
 export default user_route;

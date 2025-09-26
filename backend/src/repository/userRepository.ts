@@ -1,6 +1,5 @@
 import { IUserRepository } from "../interface/user/IUserRepository";
 import Otp, { IOtp } from "../model/otpModel";
-import Restaurant, { IRestaurant } from "../model/restaurantModel";
 import User, { IUser } from "../model/userModel";
 
 
@@ -41,6 +40,15 @@ class userRepository implements IUserRepository {
         }
     }
 
+    async findUserById(id:string):Promise<IUser | null>{
+        try {
+            return await User.findOne({_id:id});
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
     async verifyUser(email:string):Promise<void>{
         try {
            await User.findOneAndUpdate(
@@ -53,8 +61,6 @@ class userRepository implements IUserRepository {
             console.log(error);
         }
     }
-
-    
 }
 
 

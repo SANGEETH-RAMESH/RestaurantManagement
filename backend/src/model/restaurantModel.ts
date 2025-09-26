@@ -4,6 +4,7 @@ import mongoose, { Document , Schema } from "mongoose";
 
 
 export interface IRestaurant extends Document{
+    userId:mongoose.Schema.Types.ObjectId,
     name:string,
     address:string,
     phone:number,
@@ -14,6 +15,10 @@ export interface IRestaurant extends Document{
 }
 
 const restaurantSchema:Schema = new Schema({
+    userId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User'
+    },
     name:{
         type:String
     },

@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { MapPin, Phone, Mail, Clock, Upload, Star } from 'lucide-react'
 import { addRestuarant } from '../../service/userService'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import { debounce } from '../../utils/debonce'
 
 const AddRestaurant = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const AddRestaurant = () => {
     }
   }
 
-  const handleSubmit = async (e) => {
+  const submitForm = async (e) => {
     e.preventDefault()
     try {
       console.log('hmmmmmmmm', formData)
@@ -61,7 +62,6 @@ const AddRestaurant = () => {
       }
     } catch (error) {
       const axiosError = error as any;
-      console.log(axiosError.response.data, "Heyyy")
       if (axiosError.response) {
         const { message, errors } = axiosError.response.data;
         console.log(message)
@@ -73,6 +73,8 @@ const AddRestaurant = () => {
     }
    
   }
+
+  const handleSubmit = useCallback(debounce(submitForm,2000),[formData])
 
   const cuisineTypes = [
     'Italian', 'Chinese', 'American', 'Indian', 'French', 'Japanese',

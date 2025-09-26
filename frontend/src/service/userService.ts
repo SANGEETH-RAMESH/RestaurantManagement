@@ -17,16 +17,16 @@ export const resendOtp = (email:string,name:string,mobile:number,password:string
 
 export const login = (formData:{email:string,password:string}) => axios.post(`${apiUrl}/user/auth/verify-login`,formData);
 
-export const addRestuarant = (formData:FormData) =>  userApiClient.post(`${apiUrl}/user/addrestaurant`, formData,{
+export const addRestuarant = (formData:FormData) =>  userApiClient.post(`${apiUrl}/restaurant/`, formData,{
     headers:{
         "Content-Type":"multipart/form-data"
     }
 });
 
-export const getRestaurant = () => userApiClient.get(`${apiUrl}/user/restaurant`);
+export const getRestaurant = () => userApiClient.get(`${apiUrl}/restaurant`);
 
-export const getRestaurantById = (id:string) => userApiClient.get(`${apiUrl}/user/restaurant/${id}`);
+export const getRestaurantById = (id:string) => userApiClient.get(`${apiUrl}/restaurant/${id}`);
 
-export const updateRestaurant = (id:string,data:FormData) => userApiClient.put(`${apiUrl}/user/restaurant/${id}`,data);
+export const updateRestaurant = (id:string,data:FormData) => userApiClient.put(`${apiUrl}/restaurant/${id}`,data);
 
-export const deleteRestaurant = (id:string) => userApiClient.delete(`${apiUrl}/user/restaurant/${id}`);
+export const deleteRestaurant = (id:string) => userApiClient.delete(`${apiUrl}/restaurant/${id}`);

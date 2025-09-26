@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { IRestaurantRepository } from "../interface/restaurant/IRestaurantRepository";
 import { IUserRepository } from "../interface/user/IUserRepository";
 import { IUserService } from "../interface/user/IUserService";
@@ -5,7 +6,7 @@ import { IOtp } from "../model/otpModel";
 import { IRestaurant } from "../model/restaurantModel";
 import { IUser } from "../model/userModel";
 import { hashPassword } from "../utils/hashPassword";
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/jwt";
 import { generateOtp } from "../utils/otpGenerator";
 import { sendOtp } from "../utils/sendOtp";
 import bcrypt from 'bcrypt';
@@ -105,48 +106,30 @@ class userService implements IUserService {
         }
     }
 
-    async addRestaurant(data: IRestaurant): Promise<string> {
+    async validateRefreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string } | string> {
         try {
-            const response = await this._restaurantRepository.createRestaurant(data);
-            return response;
-        } catch (error) {
-            return error as string;
-        }
-    }
+            console.log(refreshToken)
+            const decoded = verifyRefreshToken(refreshToken)
+            if (typeof decoded === 'object' && decoded !== null) {
+                const response = await this._userRepository.findUserById(decoded._id);
+                if (!response) {
+                    return "No User"
+                }
+                const accessToken = generateAccessToken({
+                    _id: new Types.ObjectId(response._id as string),
+                    email:response.email
+                });
+                const refreshToken = generateRefreshToken({
+                    _id: new Types.ObjectId(response._id as string),
+                    email:response.email
+                });
+                return { accessToken, refreshToken };
+            }
 
-    async getRestaurant(): Promise<IRestaurant[] | string> {
-        try {
-            const data = await this._restaurantRepository.getRestaurant();
-            return data;
+            return "InvalidToken";
         } catch (error) {
-            return error as string;
-        }
-    }
-
-    async getRestaurantById(id: string): Promise<IRestaurant | null | string> {
-        try {
-            const restaurant = await this._restaurantRepository.getRestaurantById(id);
-            return restaurant;
-        } catch (error) {
-            return error as string;
-        }
-    }
-
-    async updateRestaurant(id: string, data: IRestaurant): Promise<string> {
-        try {
-            const update = await this._restaurantRepository.updateRestaurant(id, data);
-            return update;
-        } catch (error) {
-            return error as string;
-        }
-    }
-
-    async deleteRestaurant(id:string):Promise<string>{
-        try {
-            const deleted = await this._restaurantRepository.deleteRestaurant(id);
-            return deleted;
-        } catch (error) {
-            return error as string;   
+            console.log(error)
+            return error as string
         }
     }
 

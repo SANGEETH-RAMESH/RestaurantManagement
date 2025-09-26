@@ -14,9 +14,9 @@ class restaurantRepository implements IRestaurantRepository {
         }
     }
 
-    async getRestaurant(): Promise<IRestaurant[] | string> {
+    async getRestaurant(userId:string): Promise<IRestaurant[] | string> {
         try {
-            return await Restaurant.find();
+            return await Restaurant.find({userId:userId});
         } catch (error) {
             return error as string
         }

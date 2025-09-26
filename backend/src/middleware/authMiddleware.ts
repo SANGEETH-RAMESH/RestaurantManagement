@@ -5,7 +5,7 @@ import { Request, Response, NextFunction } from "express";
 declare global {
   namespace Express {
     interface Request {
-      user?: string | JwtPayload; 
+      user?: JwtPayload & { _id: string; email?: string }; 
     }
   }
 }
@@ -26,9 +26,8 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     }
     console.log(ACCESS_TOKEN_SECRET)
     console.log("TokeN:",token)
-    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET) as string | JwtPayload;
-    console.log(decoded,'decoded')
-    req.user = decoded; 
+    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET) as JwtPayload & { _id: string };
+req.user = decoded;
 
     next();
   } catch (error) {

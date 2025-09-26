@@ -3,8 +3,8 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import dotenv from 'dotenv';
-import userroute from "./route/userRoute";
-
+import user_route from "./route/userRoute";
+import restaurant_route from "./route/restaurantRoute";
 
 
 dotenv.config();
@@ -37,11 +37,12 @@ app.use(session({
 }));
 
 
-app.use('/api/user',userroute);
+app.use('/api/user',user_route);
+app.use('/api/restaurant',restaurant_route);
 
-app.get('/api/test',(req,res)=>{
-  res.send("HEyyy")
-})
+// app.get('/api/test',(req,res)=>{
+//   res.send("HEyyy")
+// })
 
 
 app.listen(PORT, () => {

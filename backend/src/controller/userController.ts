@@ -1,8 +1,6 @@
 import { Request, Response } from "express"
-import { signInValidation, signUpValidation } from "../validation/commonValidation";
 import { ValidationError } from "yup";
 import { IUserService } from "../interface/user/IUserService";
-import { otpValidation } from "../validation/otpValidation";
 import { restaurantValidation } from "../validation/restaurantValidation";
 import uploadImage from "../cloudinary/cloudinary";
 
@@ -73,128 +71,17 @@ class userController {
         }
     }
 
-    async addRestuarant(req: Request, res: Response): Promise<void> {
+    async validaterefreshToken(req: Request, res: Response): Promise<void> {
         try {
-            console.log(req.body, 'Body')
-            console.log((req as any).file, 'Apiff');
-            let validationErrors: Record<string, string> = {};
-            await restaurantValidation.validate(req.body, { abortEarly: false })
-                .catch((error) => {
-                    error.inner.forEach((err: ValidationError) => {
-                        if (err.path) {
-                            validationErrors[err.path] = err.message
-                        }
-                    })
-                })
-            console.log(req.file?.size!, 'size')
-            console.log(2 * 1024 * 1024)
-            if (!req.file) {
-                validationErrors["image"] = "Please upload an image";
-            } else {
-                const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-                if (!allowedTypes.includes(req.file.mimetype)) {
-                    validationErrors["image"] =
-                        "Unsupported file format. Allowed: jpg, jpeg, png";
-                }
-                if (req.file.size > 2 * 1024 * 1024) {
-                    console.log(req.file.size, "Size")
-                    console.log(2 * 1024 * 1024)
-                    console.log("hey")
-                    validationErrors["image"] =
-                        "File too large, must be less than 2MB";
-                }
-                console.log('heeeee')
-            }
-            console.log(Object.keys(validationErrors).length)
-            if (Object.keys(validationErrors).length > 0) {
-                res.status(400).json({
-                    success: false,
-                    message: "Validation Failed",
-                    errors: validationErrors,
-                });
-                return;
-            }
-            let image: string | null = null;
-
-            if (req.file?.buffer) {
-                image = await uploadImage(req.file.buffer);
-            }
-            console.log(image, "Image");
-            const data = {
-                ...req.body,
-                image
-            }
-            const response = await this._userService.addRestaurant(data);
-            res.status(200).json({ message: response, success: true })
+            console.log(req.body,'BOdy')
+            const { refreshToken } = req.body
+            const response = await this._userService.validateRefreshToken(refreshToken)
+            res.status(200).json({ success: true, message: response })
         } catch (error) {
-            const err = error as Error;
-            res.status(500).json({ message: err.message, success: false });
+            res.status(500).json({ message: (error as Error).message });
         }
     }
 
-    async getRestaurant(req: Request, res: Response): Promise<void> {
-        try {
-            const response = await this._userService.getRestaurant();
-            res.status(200).json({ message: response, success: true });
-        } catch (error) {
-            const err = error as Error;
-            res.status(500).json({ message: err.message, success: false });
-        }
-    }
-
-    async getRestaurantById(req: Request, res: Response): Promise<void> {
-        try {
-            console.log(req.params, 'Pram')
-            const id = req.params.id;
-            const response = await this._userService.getRestaurantById(id);
-            res.status(200).json({ message: response, success: true });
-        } catch (error) {
-            const err = error as Error;
-            res.status(500).json({ message: err.message, success: false });
-        }
-    }
-
-    async updateRestaurant(req: Request, res: Response): Promise<void> {
-        try {
-            console.log(req.body, 'Body')
-            let validationErrors: Record<string, string> = {};
-            await restaurantValidation.validate(req.body, { abortEarly: false })
-                .catch((error) => {
-                    error.inner.forEach((err: ValidationError) => {
-                        if (err.path) {
-                            validationErrors[err.path] = err.message
-                        }
-                    })
-                })
-            if (Object.keys(validationErrors).length > 0) {
-                res.status(400).json({
-                    success: false,
-                    message: "Validation Failed",
-                    errors: validationErrors,
-                });
-                return;
-            }
-            const id = req.params.id;
-            const data = req.body;
-            const response = await this._userService.updateRestaurant(id, data);
-            res.status(200).json({ message: response, success: true });
-        } catch (error) {
-            const err = error as Error;
-            res.status(500).json({ message: err.message, success: false });
-        }
-    }
-
-    async deleteRestaurant(req: Request, res: Response): Promise<void> {
-        try {
-            console.log(req.params, 'Idddd');
-            const id = req.params.id;
-            const response = await this._userService.deleteRestaurant(id);
-            res.status(200).json({ message: response, success: true });
-        } catch (error) {
-            const err = error as Error;
-            res.status(500).json({ message: err.message, success: false });
-        }
-    }
 }
 
 export default userController
