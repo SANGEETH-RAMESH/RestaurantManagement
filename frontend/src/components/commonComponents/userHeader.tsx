@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 export const UserHeader: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [name, setName] = useState('');
-  const [userId, setUserId] = useState('');
+  // const [userId, setUserId] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

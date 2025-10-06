@@ -1,14 +1,24 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { MapPin, Phone, Mail, Clock, Upload, Star } from 'lucide-react'
 import { addRestuarant } from '../../service/userService'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import { debounce } from '../../utils/debonce'
 
+interface RestaurantFormData {
+  name: string;
+  address: string;
+  phone: number;
+  email: string;
+  hours: number;
+  image: File | null;
+  cuisine: string;
+}
+
 const AddRestaurant = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RestaurantFormData>({
     name: '',
     address: '',
     phone: 0,
@@ -18,7 +28,7 @@ const AddRestaurant = () => {
     cuisine: ''
   })
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
@@ -26,18 +36,19 @@ const AddRestaurant = () => {
     }))
   }
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    console.log(file,"fileeeee")
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file, "fileeeee");
+
     if (file) {
       setFormData(prev => ({
         ...prev,
         image: file
-      }))
+      }));
     }
   }
 
-  const submitForm = async (e) => {
+  const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     try {
       console.log('hmmmmmmmm', formData)
@@ -48,7 +59,7 @@ const AddRestaurant = () => {
       data.append("email", formData.email);
       data.append("hours", String(formData.hours));
       data.append("cuisine", formData.cuisine);
-      console.log(formData.image,'Imagee')
+      console.log(formData.image, 'Imagee')
       if (formData.image) {
         console.log('he')
         data.append("photos", formData.image);
@@ -56,7 +67,7 @@ const AddRestaurant = () => {
       const response = await addRestuarant(data);
       console.log(response.data.message)
       const hostelResponse = response.data.message;
-      if(hostelResponse == 'Restaurant Created'){
+      if (hostelResponse == 'Restaurant Created') {
         toast.success("Restaurant Created")
         navigate('/restaurant')
       }
@@ -65,16 +76,16 @@ const AddRestaurant = () => {
       if (axiosError.response) {
         const { message, errors } = axiosError.response.data;
         console.log(message)
-        console.log(errors,'OOi')
-        if(errors){
+        console.log(errors, 'OOi')
+        if (errors) {
           setErrors(errors);
         }
       }
     }
-   
+
   }
 
-  const handleSubmit = useCallback(debounce(submitForm,2000),[formData])
+  const handleSubmit = useCallback(debounce(submitForm, 2000), [formData])
 
   const cuisineTypes = [
     'Italian', 'Chinese', 'American', 'Indian', 'French', 'Japanese',
@@ -163,7 +174,7 @@ const AddRestaurant = () => {
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
                 </div>
-                
+
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -203,7 +214,7 @@ const AddRestaurant = () => {
                       </option>
                     ))}
                   </select>
-                {errors.cuisine && <p className="text-red-500 text-sm mt-1">{errors.cuisine}</p>}
+                  {errors.cuisine && <p className="text-red-500 text-sm mt-1">{errors.cuisine}</p>}
 
                 </div>
               </div>
@@ -219,7 +230,7 @@ const AddRestaurant = () => {
                   onChange={handleFileChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 />
-                   {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image}</p>}
+                {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image}</p>}
                 {formData.image && (
                   <div className="mt-4">
                     <p className="text-sm font-medium text-gray-700 mb-2">Image Preview:</p>
@@ -233,16 +244,16 @@ const AddRestaurant = () => {
                   </div>
                 )}
               </div>
-
-              <div className="flex space-x-4 pt-6 border-t border-gray-100">
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105"
-                >
-                  Add Restaurant
-                </button>
-              </div>
+              <form onSubmit={handleSubmit}>
+                <div className="flex space-x-4 pt-6 border-t border-gray-100">
+                  <button
+                    type="button"
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105"
+                  >
+                    Add Restaurant
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
 

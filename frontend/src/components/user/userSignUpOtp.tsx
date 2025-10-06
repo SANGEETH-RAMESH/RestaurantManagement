@@ -9,7 +9,7 @@ const UserSignUpOtp: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [timer, setTimer] = useState<number>(60);
   const [canResend, setCanResend] = useState<boolean>(false);
-  
+
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const location = useLocation();
   const email = location?.state.email;
@@ -77,35 +77,35 @@ const UserSignUpOtp: React.FC = () => {
 
   const handleSubmit = async () => {
     // if (!validateOTP()) return;
-    
+
     setIsLoading(true);
-    
+
     try {
       const otpValue = otp.join('');
       console.log('OTP submitted:', otpValue);
-      const response = await verifySignUpOtp(email,Number(otpValue));
-      console.log(response.data.message,"MEssage")
-      if (response.data.message === 'Otp Verified') { 
+      const response = await verifySignUpOtp(email, Number(otpValue));
+      console.log(response.data.message, "MEssage")
+      if (response.data.message === 'Otp Verified') {
         toast.success("Otp Verified")
         setTimeout(() => {
-        navigate('/login')
+          navigate('/login')
         }, 2000);
       } else {
         setError('Invalid OTP. Please try again.');
-        setOtp(['', '', '', '']); 
+        setOtp(['', '', '', '']);
         inputRefs.current[0]?.focus();
       }
     } catch (error) {
-       const axiosError: any = error;
+      const axiosError: any = error;
       console.error('OTP verification error:', axiosError.response.data);
-        if (axiosError.response.data.errors.otp === 'OTP must be exactly 4 digits') {
-  console.log('heyeee');
-  setError('OTP must be exactly 4 digits');
-}else if(axiosError.response.data.message == 'Invalid Otp'){
+      if (axiosError.response.data.errors.otp === 'OTP must be exactly 4 digits') {
+        console.log('heyeee');
+        setError('OTP must be exactly 4 digits');
+      } else if (axiosError.response.data.message == 'Invalid Otp') {
         setError('Invalid Otp')
-       }else if(axiosError.response.data.message == 'Otp Expired'){
+      } else if (axiosError.response.data.message == 'Otp Expired') {
         setError('Otp Expired')
-       }
+      }
       // setError('Verification failed. Please try again.');
     } finally {
       setIsLoading(false);
@@ -114,11 +114,11 @@ const UserSignUpOtp: React.FC = () => {
 
   const handleResendOTP = async () => {
     if (!canResend) return;
-    
+
     try {
-      const response = await resendOtp(email,name,mobile,password);
-      console.log(response,'Response')
-      if(response.data.message == 'Otp Created'){
+      const response = await resendOtp(email, name, mobile, password);
+      console.log(response, 'Response')
+      if (response.data.message == 'Otp Created') {
         toast.success('OTP resent successfully')
       }
       setTimer(60);
@@ -159,25 +159,26 @@ const UserSignUpOtp: React.FC = () => {
             <label className="block text-sm font-semibold text-gray-700 mb-4 text-center">
               Enter 4-digit OTP
             </label>
-            
+
             <div className="flex justify-center space-x-3">
               {otp.map((digit, index) => (
                 <input
                   key={index}
-                  ref={el => inputRefs.current[index] = el}
+                  ref={(el: HTMLInputElement | null) => {
+                    inputRefs.current[index] = el;
+                  }}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
                   value={digit}
                   onChange={(e) => handleInputChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
-                  className={`w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:outline-none transition-all duration-200 ${
-                    error 
-                      ? 'border-red-300 bg-red-50 text-red-700' 
-                      : digit 
-                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700' 
+                  className={`w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:outline-none transition-all duration-200 ${error
+                      ? 'border-red-300 bg-red-50 text-red-700'
+                      : digit
+                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                         : 'border-gray-300 bg-gray-50 text-gray-900 hover:border-gray-400'
-                  } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white`}
+                    } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white`}
                   placeholder="0"
                 />
               ))}
@@ -200,11 +201,10 @@ const UserSignUpOtp: React.FC = () => {
               type="button"
               onClick={handleSubmit}
               disabled={isLoading}
-              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white ${
-                isLoading || otp.join('').length !== 4
-                  ? 'bg-gray-400 cursor-not-allowed' 
+              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white ${isLoading || otp.join('').length !== 4
+                  ? 'bg-gray-400 cursor-not-allowed'
                   : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
-              } shadow-lg`}
+                } shadow-lg`}
             >
               {isLoading ? (
                 <span className="flex items-center">
@@ -233,16 +233,15 @@ const UserSignUpOtp: React.FC = () => {
                 <span>Didn't receive the code?</span>
               )}
             </div>
-            
+
             <button
               type="button"
               onClick={handleResendOTP}
               disabled={!canResend}
-              className={`text-sm font-medium transition-colors ${
-                canResend 
-                  ? 'text-indigo-600 hover:text-indigo-500 cursor-pointer' 
+              className={`text-sm font-medium transition-colors ${canResend
+                  ? 'text-indigo-600 hover:text-indigo-500 cursor-pointer'
                   : 'text-gray-400 cursor-not-allowed'
-              }`}
+                }`}
             >
               Resend OTP
             </button>
@@ -257,9 +256,9 @@ const UserSignUpOtp: React.FC = () => {
                 <span className="px-2 bg-white text-gray-500">Having trouble?</span>
               </div>
             </div>
-          
+
             <div className='mt-3'>
-              <button 
+              <button
                 type='button'
                 onClick={navigateToLogin}
                 className='font-semibold text-indigo-600 hover:text-indigo-500 transition-colors'

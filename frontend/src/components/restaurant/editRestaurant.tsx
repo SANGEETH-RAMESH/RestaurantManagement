@@ -1,123 +1,130 @@
-import React, { useState, useEffect } from 'react'
+import  { useState, useEffect } from 'react'
 import { MapPin, Phone, Mail, Clock, Upload, Star, Loader } from 'lucide-react'
 import { getRestaurantById, updateRestaurant } from '../../service/userService'
 import { toast } from 'react-toastify'
 import { useNavigate, useParams } from 'react-router-dom'
 
+
+interface RestaurantFormData {
+  name: string;
+  address: string;
+  phone: number;
+  email: string;
+  hours: number;
+  image: File | null;
+  cuisine: string;
+  existingImage?: string;
+}
+
 const EditRestaurant = () => {
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const [loading, setLoading] = useState(true);
-    const [errors, setErrors] = useState<Record<string, string>>({})
-    const [formData, setFormData] = useState({
-        name: '',
-        address: '',
-        phone: 0,
-        email: '',
-        hours: 0,
-        image: null,
-        cuisine: '',
-        existingImage: ''
-    })
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formData, setFormData] = useState<RestaurantFormData>({
+    name: '',
+    address: '',
+    phone: 0,
+    email: '',
+    hours: 0,
+    image: null,
+    cuisine: '',
+    existingImage: ''
+  });
 
-    useEffect(() => {
-        const fetchRestaurant = async () => {
-            try {
-                setLoading(true);
-                console.log(id, 'Idddd')
-                const response = await getRestaurantById(id);
-                const restaurant = response.data.message;
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      try {
+        setLoading(true);
+        if (!id) return;
 
-                setFormData({
-                    name: restaurant.name || '',
-                    address: restaurant.address || '',
-                    phone: restaurant.phone || 0,
-                    email: restaurant.email || '',
-                    hours: restaurant.hours || 0,
-                    image: null,
-                    cuisine: restaurant.cuisine || '',
-                    existingImage: restaurant.image?.[0] || ''
-                });
-            } catch (error) {
-                console.log('Error fetching restaurant:', error);
-                toast.error('Failed to load restaurant data');
-            } finally {
-                setLoading(false);
-            }
-        };
+        const response = await getRestaurantById(id);
+        const restaurant = response.data.message;
 
-        if (id) {
-            fetchRestaurant();
-        }
-    }, [id, navigate]);
+        setFormData({
+          name: restaurant.name || '',
+          address: restaurant.address || '',
+          phone: restaurant.phone || '',
+          email: restaurant.email || '',
+          hours: restaurant.hours || '',
+          image: null,
+          cuisine: restaurant.cuisine || '',
+          existingImage: restaurant.image?.[0] || ''
+        });
+      } catch (error) {
+        console.log('Error fetching restaurant:', error);
+        toast.error('Failed to load restaurant data');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }))
+    if (id) fetchRestaurant();
+  }, [id, navigate]);
 
-        if (errors[name]) {
-            setErrors(prev => ({
-                ...prev,
-                [name]: ''
-            }));
-        }
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
     }
+  };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        console.log(file, "fileeeee")
-        if (file) {
-            setFormData(prev => ({
-                ...prev,
-                image: file
-            }))
-        }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        image: file
+      }));
     }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        try {
-            console.log('Updating restaurant:', formData)
-            const data = new FormData();
-            data.append("name", formData.name);
-            data.append("address", formData.address);
-            data.append("phone", String(formData.phone));
-            data.append("email", formData.email);
-            data.append("hours", String(formData.hours));
-            data.append("cuisine", formData.cuisine);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (!id) {
+        console.error("Restaurant ID is missing");
+        return;
+      }
 
-            if (formData.image) {
-                console.log('Adding new image')
-                data.append("photos", formData.image);
-            }
-            if (!id) {
-                console.error("Restaurant ID is missing");
-                return;
-            }
-            const response = await updateRestaurant(id, data);
-            console.log(response.data.message)
-            const updateResponse = response.data.message;
+      const data = new FormData();
+      data.append("name", formData.name);
+      data.append("address", formData.address);
+      data.append("phone", String(formData.phone));
+      data.append("email", formData.email);
+      data.append("hours", String(formData.hours));
+      data.append("cuisine", formData.cuisine);
 
-            if (updateResponse === 'Restaurant Updated') {
-                toast.success("Restaurant Updated Successfully")
-                navigate('/restaurant')
-            }
-        } catch (error) {
-            const axiosError = error as any;
-            console.log(axiosError.response.data, "Heyyy")
-            if (axiosError.response) {
-                const { message, errors } = axiosError.response.data;
-                console.log(message)
-                console.log(errors, 'OOi')
-                if (errors) {
-                    setErrors(errors);
-                }
-            }
+      if (formData.image) {
+        data.append("photos", formData.image);
+      }
+
+      const response = await updateRestaurant(id, data);
+      const updateResponse = response.data.message;
+
+      if (updateResponse === 'Restaurant Updated') {
+        toast.success("Restaurant Updated Successfully");
+        navigate('/restaurant');
+      }
+    } catch (error: unknown) {
+      const axiosError = error as any;
+      if (axiosError.response) {
+        const { message, errors } = axiosError.response.data;
+        console.log(message, errors);
+        if (errors) {
+          setErrors(errors);
         }
+      }
     }
+  };
 
     const handleCancel = () => {
         navigate('/restaurant');

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { MapPin, Phone, Mail, Clock, Star, Edit3, Trash2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { MapPin, Phone, Mail, Clock, Edit3, Trash2 } from 'lucide-react'
 import { deleteRestaurant, getRestaurant } from '../../service/userService'
 import type { Restaurant } from '../../interface/restaurant'
 import { useNavigate } from 'react-router-dom'
@@ -7,11 +7,11 @@ import { toast } from 'react-toastify'
 
 const Restaurants = () => {
 
-  const convertTo12Hour = (hour) => {
-  let period = hour >= 12 ? "PM" : "AM";
-  let formattedHour = hour % 12 || 12; 
-  return `${formattedHour}${period}`;
-};
+  const convertTo12Hour = (hour: number): string => {
+    const period: "AM" | "PM" = hour >= 12 ? "PM" : "AM";
+    const formattedHour: number = hour % 12 || 12;
+    return `${formattedHour}${period}`;
+  };
 
   const [restaurants, setRestaurants] = useState<Restaurant[]>([])
   const navigate = useNavigate();
@@ -33,18 +33,18 @@ const Restaurants = () => {
   }, [])
 
 
-  const handleEdit = (id:string) => {
+  const handleEdit = (id: string) => {
     console.log(id)
     navigate(`/editrestaurant/${id}`)
   }
 
-  const handleDelete = async(id:string) => {
-    console.log("Delete Id,",id)
+  const handleDelete = async (id: string) => {
+    console.log("Delete Id,", id)
     try {
       const response = await deleteRestaurant(id);
-      console.log(response.data.message,'Response')
+      console.log(response.data.message, 'Response')
       const RestaurantResponse = response.data.message;
-      if(RestaurantResponse == 'Restaurant Deleted'){
+      if (RestaurantResponse == 'Restaurant Deleted') {
         const response = await getRestaurant();
         const RestaurantData = response.data.message;
         setRestaurants(RestaurantData);
@@ -126,14 +126,14 @@ const Restaurants = () => {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-slate-100">
-       <div className="bg-white shadow-sm border-b">
+      <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center">
             <div className="text-center flex-1">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Our Restaurants</h1>
               <p className="text-lg text-gray-600">Discover amazing dining experiences near you</p>
             </div>
-            <button 
+            <button
               onClick={() => navigate('/addrestaurant')}
               className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
             >
@@ -156,7 +156,7 @@ const Restaurants = () => {
                   alt={restaurant.name}
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                 />
-                
+
                 <div className="absolute bottom-4 left-4 bg-black bg-opacity-60 text-white px-3 py-1 rounded-full text-sm font-medium">
                   {restaurant.cuisine}
                 </div>

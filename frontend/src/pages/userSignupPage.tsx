@@ -1,4 +1,3 @@
-import React from 'react'
 import UserSignUp from '../components/user/userSignup';
 
 const userSignupPage = () => {
