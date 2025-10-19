@@ -49,6 +49,7 @@ const AddRestaurant = () => {
   }
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log('heeyyyyy')
     e.preventDefault()
     try {
       console.log('hmmmmmmmm', formData)
@@ -107,6 +108,8 @@ const AddRestaurant = () => {
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <div className="p-8">
+              
+              <form onSubmit={(e) => submitForm(e)}>
               <div className="mb-6">
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Restaurant Name *
@@ -116,7 +119,7 @@ const AddRestaurant = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  required
+                  
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   placeholder="Enter restaurant name"
                 />
@@ -132,7 +135,6 @@ const AddRestaurant = () => {
                   name="address"
                   value={formData.address}
                   onChange={handleInputChange}
-                  required
                   rows={3}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
                   placeholder="Enter full address including street, city, and postal code"
@@ -151,7 +153,6 @@ const AddRestaurant = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="(555) 123-4567"
                   />
@@ -168,7 +169,6 @@ const AddRestaurant = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="info@restaurant.com"
                   />
@@ -188,7 +188,6 @@ const AddRestaurant = () => {
                     name="hours"
                     value={formData.hours}
                     onChange={handleInputChange}
-                    required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="11:00 AM - 10:00 PM"
                   />
@@ -204,7 +203,6 @@ const AddRestaurant = () => {
                     name="cuisine"
                     value={formData.cuisine}
                     onChange={handleInputChange}
-                    required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   >
                     <option value="">Select cuisine type</option>
@@ -244,10 +242,9 @@ const AddRestaurant = () => {
                   </div>
                 )}
               </div>
-              <form onSubmit={handleSubmit}>
                 <div className="flex space-x-4 pt-6 border-t border-gray-100">
                   <button
-                    type="button"
+                    type="submit"
                     className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105"
                   >
                     Add Restaurant

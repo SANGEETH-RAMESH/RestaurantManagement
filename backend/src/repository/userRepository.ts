@@ -1,6 +1,7 @@
 import { IUserRepository } from "../interface/user/IUserRepository";
 import Otp, { IOtp } from "../model/otpModel";
 import User, { IUser } from "../model/userModel";
+import { BaseRepository } from "./baseRepository";
 
 
 class userRepository implements IUserRepository {

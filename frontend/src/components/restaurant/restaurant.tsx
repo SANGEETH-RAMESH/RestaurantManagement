@@ -4,6 +4,7 @@ import { deleteRestaurant, getRestaurant } from '../../service/userService'
 import type { Restaurant } from '../../interface/restaurant'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import DeleteConfirmDialog from '../commonComponents/DeleteModela'
 
 const Restaurants = () => {
 
@@ -15,6 +16,9 @@ const Restaurants = () => {
 
   const [restaurants, setRestaurants] = useState<Restaurant[]>([])
   const navigate = useNavigate();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteRestaurantName, setDeleteRestaurantName] = useState("");
 
   useEffect(() => {
     const fetchRestaurant = async () => {
@@ -38,8 +42,10 @@ const Restaurants = () => {
     navigate(`/editrestaurant/${id}`)
   }
 
-  const handleDelete = async (id: string) => {
+  const handleConfirmDelete = async (id: string) => {
     console.log("Delete Id,", id)
+    const confirmDelete = window.confirm("Are you sure you want to delete this restaurant?");
+    if (!confirmDelete) return;
     try {
       const response = await deleteRestaurant(id);
       console.log(response.data.message, 'Response')
@@ -54,6 +60,12 @@ const Restaurants = () => {
       console.log(error)
     }
   }
+
+  const handleDeleteClick = (id: string, name: string) => {
+    setDeleteId(id);
+    setDeleteRestaurantName(name);
+    setDeleteDialogOpen(true);
+  };
 
   // const restaurants = [
   //   {
@@ -206,7 +218,7 @@ const Restaurants = () => {
                     <span className="text-sm font-medium">Edit</span>
                   </button>
                   <button
-                    onClick={() => handleDelete(restaurant._id)}
+                    onClick={() => handleDeleteClick(restaurant._id, restaurant.name)}
                     className="flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 transform hover:scale-105 shadow-md min-w-[80px]"
                     title="Delete Restaurant"
                   >
@@ -219,6 +231,15 @@ const Restaurants = () => {
           ))}
         </div>
       </div>
+      <DeleteConfirmDialog
+        isOpen={deleteDialogOpen}
+        restaurantName={deleteRestaurantName}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => {
+          setDeleteDialogOpen(false);
+          setDeleteId(null);
+        }}
+      />
     </div>
   )
 }

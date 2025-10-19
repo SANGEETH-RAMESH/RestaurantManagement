@@ -1,9 +1,10 @@
 import { IRestaurantRepository } from "../interface/restaurant/IRestaurantRepository";
 import Restaurant, { IRestaurant } from "../model/restaurantModel";
+import { BaseRepository } from "./baseRepository";
 
 
 
-class restaurantRepository implements IRestaurantRepository {
+class restaurantRepository  implements IRestaurantRepository {
 
     async createRestaurant(data: IRestaurant): Promise<string> {
         try {

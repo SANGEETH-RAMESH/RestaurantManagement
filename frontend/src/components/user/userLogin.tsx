@@ -68,7 +68,7 @@ const UserLogin: React.FC = () => {
       console.log(formData)
       console.log('Login data:', formData);
       const response = await login(formData);
-      const { message, accessToken, refreshToken } = response.data;
+      const { message, accessToken, refreshToken } = response?.data;
       console.log(message, accessToken, refreshToken, 'res')
       if (message == 'Login Successful') {
         toast.success("Login Successful");
