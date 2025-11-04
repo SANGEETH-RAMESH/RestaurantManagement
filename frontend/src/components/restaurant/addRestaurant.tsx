@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react'
+import {  useState } from 'react'
 import { MapPin, Phone, Mail, Clock, Upload, Star } from 'lucide-react'
 import { addRestuarant } from '../../service/userService'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
-import { debounce } from '../../utils/debonce'
+
 
 interface RestaurantFormData {
   name: string;
@@ -86,7 +86,6 @@ const AddRestaurant = () => {
 
   }
 
-  const handleSubmit = useCallback(debounce(submitForm, 2000), [formData])
 
   const cuisineTypes = [
     'Italian', 'Chinese', 'American', 'Indian', 'French', 'Japanese',
