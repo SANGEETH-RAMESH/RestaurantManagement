@@ -8,7 +8,7 @@ import UserEditRestuarantPage from '../pages/userEditRestaurantPage';
 import UserLandingPage from '../pages/userLandingPage';
 import PublicRoute from '../routeProtector/loginProtector';
 import ProtectedRoute from '../routeProtector/ProtectiveCheck';
-
+import Testerrr from '../components/user/test';
 
 const userRoute = () => {
   return (
@@ -16,6 +16,7 @@ const userRoute = () => {
       <Routes>
         <Route path='/restaurant' element={<UserRestaurant/>}/>
         <Route path='/' element={<UserLandingPage/>} />
+        <Route path='/test' element={<Testerrr/>}/>
         <Route path='/login' element={<PublicRoute><UserLoginPage/></PublicRoute>}  />
         <Route path='/signup' element={<PublicRoute><UserSignupPage/></PublicRoute>} />
         <Route path='/signupotp' element={<PublicRoute><UserSignUpOtpPage/></PublicRoute>}/>

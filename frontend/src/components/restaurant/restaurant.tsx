@@ -44,8 +44,8 @@ const Restaurants = () => {
 
   const handleConfirmDelete = async (id: string) => {
     console.log("Delete Id,", id)
-    const confirmDelete = window.confirm("Are you sure you want to delete this restaurant?");
-    if (!confirmDelete) return;
+    // const confirmDelete = window.confirm("Are you sure you want to delete this restaurant?");
+    // if (!confirmDelete) return;
     try {
       const response = await deleteRestaurant(id);
       console.log(response.data.message, 'Response')
@@ -55,6 +55,8 @@ const Restaurants = () => {
         const RestaurantData = response.data.message;
         setRestaurants(RestaurantData);
         toast.success("Restaurant Deleted");
+        setDeleteDialogOpen(false);
+        setDeleteId(null);
       }
     } catch (error) {
       console.log(error)
@@ -67,75 +69,7 @@ const Restaurants = () => {
     setDeleteDialogOpen(true);
   };
 
-  // const restaurants = [
-  //   {
-  //     id: 1,
-  //     name: "Bella Vista Italian",
-  //     address: "123 Main Street, Downtown, City 12345",
-  //     phone: "(555) 123-4567",
-  //     email: "info@bellavista.com",
-  //     hours: "11:00 AM - 10:00 PM",
-  //     rating: 4.8,
-  //     cuisine: "Italian",
-  //     image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=250&fit=crop&crop=center"
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Dragon Palace",
-  //     address: "456 Oak Avenue, Chinatown, City 12346",
-  //     phone: "(555) 987-6543",
-  //     email: "contact@dragonpalace.com",
-  //     hours: "12:00 PM - 11:00 PM",
-  //     rating: 4.6,
-  //     cuisine: "Chinese",
-  //     image: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400&h=250&fit=crop&crop=center"
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Sunset Grill",
-  //     address: "789 Beach Road, Waterfront, City 12347",
-  //     phone: "(555) 456-7890",
-  //     email: "hello@sunsetgrill.com",
-  //     hours: "10:00 AM - 12:00 AM",
-  //     rating: 4.7,
-  //     cuisine: "American",
-  //     image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=250&fit=crop&crop=center"
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Spice Route",
-  //     address: "321 Curry Lane, Little India, City 12348",
-  //     phone: "(555) 234-5678",
-  //     email: "orders@spiceroute.com",
-  //     hours: "11:30 AM - 10:30 PM",
-  //     rating: 4.9,
-  //     cuisine: "Indian",
-  //     image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400&h=250&fit=crop&crop=center"
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Le Petit Bistro",
-  //     address: "654 Romance Street, French Quarter, City 12349",
-  //     phone: "(555) 345-6789",
-  //     email: "reservations@lepetitbistro.com",
-  //     hours: "5:00 PM - 11:00 PM",
-  //     rating: 4.5,
-  //     cuisine: "French",
-  //     image: "https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400&h=250&fit=crop&crop=center"
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "Sakura Sushi",
-  //     address: "987 Bamboo Street, Japan Town, City 12350",
-  //     phone: "(555) 567-8901",
-  //     email: "info@sakurasushi.com",
-  //     hours: "12:00 PM - 10:00 PM",
-  //     rating: 4.8,
-  //     cuisine: "Japanese",
-  //     image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&h=250&fit=crop&crop=center"
-  //   }
-  // ]
-
+ 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="bg-white shadow-sm border-b">
@@ -234,7 +168,7 @@ const Restaurants = () => {
       <DeleteConfirmDialog
         isOpen={deleteDialogOpen}
         restaurantName={deleteRestaurantName}
-        onConfirm={handleConfirmDelete}
+        onConfirm={() => deleteId && handleConfirmDelete(deleteId)}
         onCancel={() => {
           setDeleteDialogOpen(false);
           setDeleteId(null);
