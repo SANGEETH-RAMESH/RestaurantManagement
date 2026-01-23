@@ -62,6 +62,16 @@ class userRepository implements IUserRepository {
             console.log(error);
         }
     }
+
+    async getUserDetails(userId:string):Promise<IUser | string | null>{
+        try {
+            return await User.findOne({
+                _id:userId
+            })
+        } catch (error) {
+            return error as string
+        }
+    }
 }
 
 

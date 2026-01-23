@@ -8,6 +8,6 @@ export interface IUserRepository{
     findOtpByEmail(email:string):Promise<IOtp | null>,
     findUserByEmail(email:string):Promise<IUser | null>,
     verifyUser(email:string):Promise<void>,
-    findUserById(id:string):Promise<IUser | null>
-    
+    findUserById(id:string):Promise<IUser | null>,
+    getUserDetails(userId:string):Promise<IUser | string | null>
 }

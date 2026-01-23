@@ -23,7 +23,7 @@ restaurant_route.get('/:id',restaurantController.getRestaurantById.bind(restaura
 
 restaurant_route.put('/:id',validate(restaurantValidation),restaurantController.updateRestaurant.bind(restaurantController));
 
-restaurant_route.delete('/:id',restaurantController.deleteRestaurant.bind(restaurantController));
+restaurant_route.delete('/:id',authMiddleware,restaurantController.deleteRestaurant.bind(restaurantController));
 
 restaurant_route.get('/',authMiddleware,restaurantController.getRestaurant.bind(restaurantController));
 

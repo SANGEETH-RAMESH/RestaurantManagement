@@ -1,8 +1,5 @@
 import { Request, Response } from "express"
-import { ValidationError } from "yup";
 import { IUserService } from "../interface/user/IUserService";
-import { restaurantValidation } from "../validation/restaurantValidation";
-import uploadImage from "../cloudinary/cloudinary";
 
 
 class userController {
@@ -21,6 +18,7 @@ class userController {
     async verifySignUpOtp(req: Request, res: Response): Promise<void> {
         try {
             const response = await this._userService.verifySignUpOtp(req.body);
+            console.log(response,'Response')
             if (response == 'Invalid Otp') {
                 res.status(400).json({ success: false, message: response })
             } else if (response == "Otp Expired") {
@@ -77,6 +75,17 @@ class userController {
             const { refreshToken } = req.body
             const response = await this._userService.validateRefreshToken(refreshToken)
             res.status(200).json({ success: true, message: response })
+        } catch (error) {
+            res.status(500).json({ message: (error as Error).message });
+        }
+    }
+
+    async getUserDetails(req:Request,res:Response):Promise<void>{
+        try {
+            const userId = req.user!._id;
+            console.log(userId,'UserId')
+            const response = await this._userService.getUserDetails(userId);
+            res.status(200).json({success:true,message:response})
         } catch (error) {
             res.status(500).json({ message: (error as Error).message });
         }

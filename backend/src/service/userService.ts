@@ -133,6 +133,16 @@ class userService implements IUserService {
         }
     }
 
+    async getUserDetails(userId:string):Promise<IUser | string | null>{
+        try {
+            const userDetails = await this._userRepository.getUserDetails(userId);
+            return userDetails;
+            return null
+        } catch (error) {
+            return null
+        }
+    }
+
 }
 
 export default userService;

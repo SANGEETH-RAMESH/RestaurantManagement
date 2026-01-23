@@ -76,7 +76,10 @@ class restaurantController{
     async deleteRestaurant(req: Request, res: Response): Promise<void> {
         try {
             const id = req.params.id;
-            const response = await this._restaurantService.deleteRestaurant(id);
+            const userId = req.user!._id;
+            console.log(userId,'UserId')
+            console.log("Id",id);
+            const response = await this._restaurantService.deleteRestaurant(id,userId);
             res.status(200).json({ message: response, success: true });
         } catch (error) {
             const err = error as Error;

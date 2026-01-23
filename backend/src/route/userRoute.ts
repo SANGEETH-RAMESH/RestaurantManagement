@@ -30,6 +30,8 @@ user_route.post('/auth/verify-login',validate(signInValidation),userController.v
 
 user_route.post('/token/refresh',userController.validaterefreshToken.bind(userController));
 
+user_route.get('/',authMiddleware,userController.getUserDetails.bind(userController))
+
 user_route.get('/test',(req,res)=>{
     res.status(200).json({message:process.env.FRONTEND_URL})
 })

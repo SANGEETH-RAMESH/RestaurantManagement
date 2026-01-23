@@ -6,5 +6,5 @@ export interface IRestaurantRepository {
     getRestaurant(userId:string): Promise<IRestaurant[] | string>,
     getRestaurantById(id: string): Promise<IRestaurant | null | string>,
     updateRestaurant(id:string,data:IRestaurant):Promise<string>,
-    deleteRestaurant(id:string):Promise<string>
+    deleteRestaurant(id:string,userId:string):Promise<string>
 }

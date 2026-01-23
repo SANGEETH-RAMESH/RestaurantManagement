@@ -43,9 +43,9 @@ class restaurantService implements IRestaurantService{
             }
         }
     
-        async deleteRestaurant(id:string):Promise<string>{
+        async deleteRestaurant(id:string,userId:string):Promise<string>{
             try {
-                const deleted = await this._restaurantRepository.deleteRestaurant(id);
+                const deleted = await this._restaurantRepository.deleteRestaurant(id,userId);
                 return deleted;
             } catch (error) {
                 return error as string;   

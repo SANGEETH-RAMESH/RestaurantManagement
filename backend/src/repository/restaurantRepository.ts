@@ -49,10 +49,13 @@ class restaurantRepository  implements IRestaurantRepository {
         }
     }
 
-    async deleteRestaurant(id:string):Promise<string>{
+    async deleteRestaurant(id:string,userId:string):Promise<string>{
         try {
             await Restaurant.findOneAndDelete(
-                {_id:id}
+                {
+                    _id:id,
+                    userId:userId
+                }
             );
             return "Restaurant Deleted";
         } catch (error) {
