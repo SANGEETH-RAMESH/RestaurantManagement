@@ -97,14 +97,22 @@ const UserSignUpOtp: React.FC = () => {
       }
     } catch (error) {
       const axiosError: any = error;
-      console.error('OTP verification error:', axiosError.response.data);
-      if (axiosError.response.data.errors.otp === 'OTP must be exactly 4 digits') {
-        console.log('heyeee');
+
+      const message =
+        axiosError?.response?.data?.message ||
+        axiosError?.message ||
+        'Something went wrong';
+
+      console.error('OTP verification error:', message);
+
+      const otpError = axiosError?.response?.data?.errors?.otp;
+
+      if (otpError === 'OTP must be exactly 4 digits') {
         setError('OTP must be exactly 4 digits');
-      } else if (axiosError.response.data.message == 'Invalid Otp') {
-        setError('Invalid Otp')
-      } else if (axiosError.response.data.message == 'Otp Expired') {
-        setError('Otp Expired')
+      } else if (message === 'Invalid Otp') {
+        setError('Invalid Otp');
+      } else if (message === 'Otp Expired') {
+        setError('Otp Expired');
       }
       // setError('Verification failed. Please try again.');
     } finally {
@@ -174,10 +182,10 @@ const UserSignUpOtp: React.FC = () => {
                   onChange={(e) => handleInputChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   className={`w-12 h-12 text-center text-xl font-bold border-2 rounded-lg focus:outline-none transition-all duration-200 ${error
-                      ? 'border-red-300 bg-red-50 text-red-700'
-                      : digit
-                        ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                        : 'border-gray-300 bg-gray-50 text-gray-900 hover:border-gray-400'
+                    ? 'border-red-300 bg-red-50 text-red-700'
+                    : digit
+                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                      : 'border-gray-300 bg-gray-50 text-gray-900 hover:border-gray-400'
                     } focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white`}
                   placeholder="0"
                 />
@@ -201,10 +209,14 @@ const UserSignUpOtp: React.FC = () => {
               type="button"
               onClick={handleSubmit}
               disabled={isLoading}
-              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white ${isLoading || otp.join('').length !== 4
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
-                } shadow-lg`}
+              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white shadow-lg
+${isLoading
+  ? 'bg-blue-400 cursor-not-allowed'
+  : otp.join('').length !== 4
+    ? 'bg-blue-600 focus:outline-none focus:ring-0 hover:bg-blue-600 cursor-pointer'
+    : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+}`}
+
             >
               {isLoading ? (
                 <span className="flex items-center">
@@ -239,8 +251,8 @@ const UserSignUpOtp: React.FC = () => {
               onClick={handleResendOTP}
               disabled={!canResend}
               className={`text-sm font-medium transition-colors ${canResend
-                  ? 'text-indigo-600 hover:text-indigo-500 cursor-pointer'
-                  : 'text-gray-400 cursor-not-allowed'
+                ? 'text-indigo-600 hover:text-indigo-500 cursor-pointer'
+                : 'text-gray-400 cursor-not-allowed'
                 }`}
             >
               Resend OTP

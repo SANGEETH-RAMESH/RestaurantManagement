@@ -30,3 +30,5 @@ export const getRestaurantById = (id:string) => userApiClient.get(`${apiUrl}/res
 export const updateRestaurant = (id:string,data:FormData) => userApiClient.put(`${apiUrl}/restaurant/${id}`,data);
 
 export const deleteRestaurant = (id:string) => userApiClient.delete(`${apiUrl}/restaurant/${id}`);
+
+export const getUserDetails = () => userApiClient.get(`${apiUrl}/user`)
