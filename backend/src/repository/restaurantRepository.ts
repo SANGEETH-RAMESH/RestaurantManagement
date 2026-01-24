@@ -4,7 +4,11 @@ import { BaseRepository } from "./baseRepository";
 
 
 
-class restaurantRepository  implements IRestaurantRepository {
+class restaurantRepository extends BaseRepository<IRestaurant> implements IRestaurantRepository {
+
+    constructor(){
+        super(Restaurant)
+    }
 
     async createRestaurant(data: IRestaurant): Promise<string> {
         try {

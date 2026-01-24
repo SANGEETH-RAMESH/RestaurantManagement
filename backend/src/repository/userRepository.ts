@@ -4,7 +4,12 @@ import User, { IUser } from "../model/userModel";
 import { BaseRepository } from "./baseRepository";
 
 
-class userRepository implements IUserRepository {
+class userRepository extends BaseRepository<IUser> implements IUserRepository {
+
+    constructor(){
+        super(User)
+    }
+
     async createUser(userData: Partial<IUser>): Promise<string> {
         try {
             await User.create(userData);
